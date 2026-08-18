@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>約會邀請 💌</title>
+<style>
+*{box-sizing:border-box}
+:root{--pink:#ff668d;--deep:#e94f79;--cream:#fff8f4;--ink:#513943;--soft:#f7e9ee}
+html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;color:var(--ink);background:linear-gradient(145deg,#ffe8ef,#fff8ef 52%,#ffe8f4)}
+body{min-height:100svh;overflow-x:hidden}
+.page{display:none;min-height:100svh;padding:24px 18px;align-items:center;justify-content:center}
+.page.active{display:flex;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.card{width:min(94vw,680px);background:rgba(255,255,255,.88);border:1px solid #fff;border-radius:30px;padding:clamp(24px,5vw,44px);box-shadow:0 18px 50px rgba(120,55,78,.15);text-align:center}
+h1{font-size:clamp(31px,7vw,50px);margin:0 0 10px;line-height:1.15}
+h2{font-size:clamp(27px,6vw,38px);margin:0 0 10px}
+.sub{opacity:.68;line-height:1.65;margin:0 0 24px}
+.gif-wrap{height:230px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.homer{max-width:100%;max-height:100%;object-fit:contain;animation:enter 1.15s cubic-bezier(.2,.9,.25,1.15)}
+@keyframes enter{from{transform:translateX(-120%);opacity:0}to{transform:none;opacity:1}}
+.fallback{display:none;font-size:72px}
+.actions{display:flex;justify-content:center;gap:18px;min-height:70px;align-items:center}
+button,.choice{border:0;border-radius:20px;font:inherit;font-weight:750;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.primary{background:linear-gradient(135deg,#ff789b,#ff547e);color:#fff;padding:14px 30px;box-shadow:0 10px 22px rgba(255,84,126,.28)}
+.secondary{background:#f2e9ed;color:#715e66;padding:14px 30px}
+#noBtn{position:fixed;z-index:1000;transition:left .14s ease,top .14s ease,transform .12s ease}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0 26px}
+label{text-align:left;font-size:14px;font-weight:700}
+input{width:100%;margin-top:7px;border:1px solid #eadde2;background:#fff;border-radius:14px;padding:13px;font:inherit;color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;margin:22px 0}
+.choice{padding:17px 13px;background:#fff;border:2px solid #f0e2e7;box-shadow:0 7px 18px rgba(90,55,65,.07);transition:.16s}
+.choice:hover,.choice.selected{border-color:#ff87a5;background:#fff3f6;transform:translateY(-2px)}
+.choice .emoji{display:block;font-size:34px;margin-bottom:5px}
+.date-types{grid-template-columns:1fr}
+.date-types .choice{padding:19px}
+.surprise{font-size:90px;margin:8px 0;animation:pop .55s cubic-bezier(.2,.9,.3,1.3)}
+@keyframes pop{from{transform:scale(.25) rotate(-12deg);opacity:0}to{transform:none;opacity:1}}
+.summary{text-align:left;background:#fff7f9;border-radius:20px;padding:20px;margin:22px 0;line-height:1.9}
+.summary b{display:inline-block;min-width:86px}
+.nav{display:flex;justify-content:center;gap:12px;margin-top:22px}
+.done{font-size:80px}
+@media(max-width:520px){.form-row{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.gif-wrap{height:190px}.card{padding:25px 19px}.choice{padding:15px 8px}}
+</style>
+</head>
+<body>
+
+<section id="p1" class="page active">
+ <div class="card">
+  <div style="font-size:13px;letter-spacing:.14em;opacity:.55">A LITTLE QUESTION FOR YOU</div>
+  <h1>你要跟我約會嗎？💗</h1>
+  <p class="sub">我有一封很重要的信想親手交給你。</p>
+  <div class="gif-wrap">
+   <img id="homerGif" class="homer" src="homer.gif" alt="Homer">
+   <div id="fallback" class="fallback">😳💌</div>
+  </div>
+  <div class="actions"><button class="primary" onclick="go('p2')">Yes 💕</button></div>
+ </div>
+ <button id="noBtn" class="secondary">No 🙈</button>
+</section>
+
+<section id="p2" class="page">
+ <div class="card">
+  <h2>真的答應了耶 🥹💕</h2>
+  <p class="sub">那我們來決定約會時間跟要做什麼吧！</p>
+  <div class="form-row">
+   <label>📅 約會日期<input id="date" type="date"></label>
+   <label>🕐 約會時間<input id="time" type="time"></label>
+  </div>
+  <h2 style="font-size:25px">想要什麼約會？</h2>
+  <div class="grid date-types">
+   <button class="choice" onclick="pickType('吃飯 🍽️','p3a')"><span class="emoji">🍽️</span>一起吃飯</button>
+   <button class="choice" onclick="pickType('出去玩 🎡','p3b')"><span class="emoji">🎡</span>一起出去玩</button>
+   <button class="choice" onclick="pickType('做❤️18禁的事 😳','p3c')"><span class="emoji">❤️‍🔥</span>做❤️18禁的事</button>
+  </div>
+ </div>
+</section>
+
+<section id="p3a" class="page">
+ <div class="card">
+  <h2>今天想吃什麼？🤤</h2>
+  <p class="sub">選一個最有感覺的！</p>
+  <div class="grid">
+   <button class="choice" onclick="pickDetail(this,'速食 🍔')"><span class="emoji">🍔</span>速食</button>
+   <button class="choice" onclick="pickDetail(this,'中式料理 🥟')"><span class="emoji">🥟</span>中式</button>
+   <button class="choice" onclick="pickDetail(this,'壽司 🍣')"><span class="emoji">🍣</span>壽司</button>
+   <button class="choice" onclick="pickDetail(this,'韓式料理 🥘')"><span class="emoji">🥘</span>韓式</button>
+   <button class="choice" onclick="pickDetail(this,'火鍋 🍲')"><span class="emoji">🍲</span>火鍋</button>
+   <button class="choice" onclick="pickDetail(this,'義式料理 🍝')"><span class="emoji">🍝</span>義式</button>
+   <button class="choice" onclick="pickDetail(this,'燒肉 🥩')"><span class="emoji">🥩</span>燒肉</button>
+   <button class="choice" onclick="pickDetail(this,'甜點／咖啡廳 🍰')"><span class="emoji">🍰</span>甜點／咖啡廳</button>
+  </div>
+  <div class="nav"><button class="secondary" onclick="go('p2')">← 上一步</button><button class="primary" onclick="review()">下一步 💕</button></div>
+ </div>
+</section>
+
+<section id="p3b" class="page">
+ <div class="card">
+  <h2>那我們去哪裡玩？🎡</h2>
+  <p class="sub">今天想走哪一種約會路線？</p>
+  <div class="grid">
+   <button class="choice" onclick="pickDetail(this,'看電影 🎬')"><span class="emoji">🎬</span>看電影</button>
+   <button class="choice" onclick="pickDetail(this,'逛街 🛍️')"><span class="emoji">🛍️</span>逛街</button>
+   <button class="choice" onclick="pickDetail(this,'看展覽 🖼️')"><span class="emoji">🖼️</span>看展覽</button>
+   <button class="choice" onclick="pickDetail(this,'戶外運動 🚴')"><span class="emoji">🚴</span>戶外運動</button>
+   <button class="choice" onclick="pickDetail(this,'遊樂園 🎢')"><span class="emoji">🎢</span>遊樂園</button>
+   <button class="choice" onclick="pickDetail(this,'散步／夜景 🌃')"><span class="emoji">🌃</span>散步／夜景</button>
+   <button class="choice" onclick="pickDetail(this,'唱歌 🎤')"><span class="emoji">🎤</span>唱歌</button>
+   <button class="choice" onclick="pickDetail(this,'桌遊／密室 🎲')"><span class="emoji">🎲</span>桌遊／密室</button>
+  </div>
+  <div class="nav"><button class="secondary" onclick="go('p2')">← 上一步</button><button class="primary" onclick="review()">下一步 💕</button></div>
+ </div>
+</section>
+
+<section id="p3c" class="page">
+ <div class="card">
+  <div class="surprise">😳❤️‍🔥</div>
+  <h2>等等……你選這個！？</h2>
+  <p class="sub" style="font-size:18px">我有點驚訝……但好像非常滿意這個答案 😏💕</p>
+  <div class="nav"><button class="secondary" onclick="go('p2')">我再想想 🙈</button><button class="primary" onclick="review(true)">就這個 😳</button></div>
+ </div>
+</section>
+
+<section id="p4" class="page">
+ <div class="card">
+  <h2>最後確認一下 💌</h2>
+  <p class="sub">沒問題的話，就把這份約會邀請送出去吧。</p>
+  <div class="summary">
+   <div><b>📅 日期</b><span id="sDate"></span></div>
+   <div><b>🕐 時間</b><span id="sTime"></span></div>
+   <div><b>💗 約會</b><span id="sType"></span></div>
+   <div id="detailRow"><b>✨ 選擇</b><span id="sDetail"></span></div>
+  </div>
+  <div class="nav"><button class="secondary" onclick="backFromReview()">← 修改</button><button class="primary" onclick="submitDate()">確認送出 💕</button></div>
+ </div>
+</section>
+
+<section id="done" class="page">
+ <div class="card">
+  <div class="done">💌💖</div>
+  <h2>約會邀請完成！</h2>
+  <p class="sub">好啦，現在可不能反悔了喔 😌💕</p>
+ </div>
+</section>
+
+<script>
+let state={type:'',detail:'',previous:'p2'};
+const pages=[...document.querySelectorAll('.page')];
+function go(id){pages.forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
+function pickType(type,page){state.type=type;state.detail='';state.previous=page;go(page)}
+function pickDetail(el,val){state.detail=val;el.closest('.grid').querySelectorAll('.choice').forEach(x=>x.classList.remove('selected'));el.classList.add('selected')}
+function review(adult=false){
+ const d=document.getElementById('date').value,t=document.getElementById('time').value;
+ if(!d||!t){alert('先選好日期和時間喔 💕');go('p2');return}
+ if(!adult&&!state.detail){alert('先選一個約會內容喔 💗');return}
+ document.getElementById('sDate').textContent=d;
+ document.getElementById('sTime').textContent=t;
+ document.getElementById('sType').textContent=state.type;
+ document.getElementById('sDetail').textContent=state.detail||'秘密行程 😳';
+ document.getElementById('detailRow').style.display='block';
+ go('p4')
+}
+function backFromReview(){go(state.previous)}
+function submitDate(){
+  const d = document.getElementById('date').value;
+  const t = document.getElementById('time').value;
+
+  const message =
+`💌 約會邀請回覆
+
+📅 日期：${d}
+🕐 時間：${t}
+💗 約會類型：${state.type}
+✨ 選擇：${state.detail || '秘密行程 😳'}
+
+我選好了 ❤️`;
+
+  // LINE 官方分享網址：開啟 LINE，讓對方選擇要把結果傳給哪個聊天室。
+  const lineUrl = 'https://line.me/R/share?text=' + encodeURIComponent(message);
+
+  // 先顯示完成頁，再嘗試開啟 LINE。
+  go('done');
+  setTimeout(() => {
+    window.location.href = lineUrl;
+  }, 450);
+}
+
+const gif=document.getElementById('homerGif'),fb=document.getElementById('fallback');
+gif.addEventListener('error',()=>{gif.style.display='none';fb.style.display='block'});
+
+const no=document.getElementById('noBtn');
+function moveNo(x=null,y=null){
+ const r=no.getBoundingClientRect(),pad=15,maxX=innerWidth-r.width-pad,maxY=innerHeight-r.height-pad;
+ let nx,ny,i=0;
+ do{nx=pad+Math.random()*Math.max(1,maxX-pad);ny=pad+Math.random()*Math.max(1,maxY-pad);i++;
+ if(x!==null&&Math.hypot(nx+r.width/2-x,ny+r.height/2-y)<170&&i<15)continue;break}while(i<15);
+ no.style.left=nx+'px';no.style.top=ny+'px';no.style.transform=`rotate(${Math.random()*14-7}deg)`
+}
+document.addEventListener('pointermove',e=>{if(e.pointerType==='touch')return;const r=no.getBoundingClientRect();if(Math.hypot(e.clientX-(r.left+r.width/2),e.clientY-(r.top+r.height/2))<110)moveNo(e.clientX,e.clientY)});
+['pointerdown','mouseenter','click'].forEach(ev=>no.addEventListener(ev,e=>{e.preventDefault();moveNo(e.clientX,e.clientY)}));
+requestAnimationFrame(()=>{no.style.left=Math.min(innerWidth-110,innerWidth*.60)+'px';no.style.top=Math.min(innerHeight-70,innerHeight*.72)+'px'});
+</script>
+</body>
+</html>
